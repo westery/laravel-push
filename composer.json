@@ -1,0 +1,23 @@
+{
+    "name": "westery/laravel-push",
+    "description": "laravel sms service",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Westery",
+            "email": "xishanxiaoke@foxmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "php": ">=5.5.0",
+        "illuminate/console": "~5.0",
+        "westery/aliyun-openapi":"*"
+    },
+    "autoload": {
+        "psr-4": {
+            "Westery\\LaravelPush\\":  "src/"
+        }
+    }
+}

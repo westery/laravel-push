@@ -1,2 +1,2 @@
-# laravel-push
-laravel app推送
+# laravel-sms
+laravel 短信扩展
