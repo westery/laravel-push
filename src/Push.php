@@ -2,138 +2,84 @@
 
 namespace Westery\LaravelPush;
 use Westery\LaravelPush\lib\Aliyun;
-use Westery\LaravelPush\lib\NetEase;
-
 /**
- * Push
- * Class Sms
+ * App推送 Push
+ * Class Push
  * @package Westery\LaravelPush
  */
 class Push
 {
 
-    protected $smsData = [
-        'to'           => null,
-        'templates'    => [],
-        'templateData' => [],
-        'content'      => null,
-    ];
+    protected $pushData ;
 
-    protected $agent;
-
-    protected $config;
+    protected $config = 'Aliyun';
 
     public function __construct($config)
     {
         $this->config = $config;
+        $this->pushData = [
+            'account' => '',
+            'title' => 'title',
+            'body' => 'body',
+            'config' => []
+        ];
     }
 
     /**
-     * Get all the data of SMS/voice verify.
-     *
-     * @param null|string $name
-     *
-     * @return mixed
-     */
-    public function getData($name = null)
-    {
-        if (is_string($name) && isset($this->smsData["$name"])) {
-            return $this->smsData[$name];
-        }
-
-        return $this->smsData;
-    }
-
-    /**
-     * send mobile.
-     *
-     * @param $mobile
-     *
+     * @param $account
      * @return $this
      */
-    public function to($mobile)
+    public function to($account)
     {
-        $this->smsData['to'] = $mobile;
+        $this->pushData['account'] = $account;
 
         return $this;
     }
 
     /**
-     * send content for part of sms-providers support content-sms.
-     *
-     * @param $content
-     *
+     * @param $title
      * @return $this
      */
-    public function content($content)
+    public function title($title)
     {
-        $this->smsData['content'] = $content;
+        $this->pushData['title'] = $title;
 
         return $this;
     }
 
     /**
-     * set template-id for part of sms-providers support template-sms.
-     *
-     * @param $agentName
-     * @param null $tempId
-     *
+     * @param $body
      * @return $this
      */
-    public function template($agentName = 'SMS_AGENT', $tempId = null)
+    public function body($body)
     {
-        if ($agentName === 'SMS_AGENT') {
-            $agentName = $this->config;
-        }
-        if (is_array($agentName)) {
-            foreach ($agentName as $k => $v) {
-                $this->template($k, $v);
-            }
-        } elseif ($agentName && $tempId) {
-            if (!isset($this->smsData['templates']) || !is_array($this->smsData['templates'])) {
-                $this->smsData['templates'] = [];
-            }
-            $this->smsData['templates']["$agentName"] = $tempId;
-        }
-
+        $this->pushData['body'] = $body;
         return $this;
     }
 
     /**
-     * set template-data for part of sms-providers support template-sms.
-     *
-     * @param array $data
-     *
+     * @param array $config
      * @return $this
      */
-    public function data(array $data)
+    public function config($config=[])
     {
-        $this->smsData['templateData'] = $data;
-
+        $this->pushData['config'] = $config;
         return $this;
     }
 
     /**
      * @throws \Exception
-     *
      * @return mixed
      */
     public function send()
     {
-        if($this->config === 'NetEase'){
-            $_config = config('sms.agents.'.$this->config);
-            $rest = new NetEase($_config['appKey'],$_config['appSecret']);
-
-            if($this->smsData['templates']['NetEase'] == 9999){
-                return $rest->sendSmsCode($this->smsData['to'],$this->smsData['templateData']['code']);
-            }
-            return  $rest->sendSMSTemplate($this->smsData['templates']['NetEase'],$this->smsData['to'],$this->smsData['templateData']);
-
-        } elseif($this->config === 'Aliyun'){
-            $_config = config('sms.agents.'.$this->config);
-            $rest = new Aliyun($_config['appKey'],$_config['appSecret'],$_config['signName']);
-            return $rest->sendSMSTemplate($this->smsData['templates'][$this->config],$this->smsData['to'],$this->smsData['templateData']);
-
+        if($this->config === 'Aliyun'){
+            $_config = config('push.agents.'.$this->config);
+            //$ak_id,$ak_secret,$app_key
+            $rest = new Aliyun($_config['accessKeyId'],
+                $_config['accessKeySecret'],
+                $_config['appKey']);
+            return $rest->push($this->pushData['account'],$this->pushData['title'],$this->pushData['body'],$this->pushData['config']);
         } else{
             throw new \Exception('make sure you have choose a right agent');
         }

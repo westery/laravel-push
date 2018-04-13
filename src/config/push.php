@@ -1,20 +1,14 @@
 <?php
 
 return [
-    'default' => env('SMS_AGENT', 'NetEase'),
+    'default' => env('PUSH_AGENT', 'Aliyun'),
 
     'agents' => [
-        //网易短信
-        'NetEase' => [
-            'appKey' => env('NETEASE_APPKEY','your netease appkey'),
-            'appSecret' => env('NETEASE_APPSECRET','you netease appsecret'),
-        ],
-        //阿里云短信
+        //阿里云推送
         'Aliyun' => [
-            'appKey' => env('Aliyun_APPKEY_SMS','your aliyun sms appkey'),
-            'appSecret' => env('Aliyun_APPSECRET_SMS','you aliyun sms appsecret'),
-            'signName' => env('Aliyun_SIGNNAME','your aliyun sign name'),
-            'codeTemplate' => env('Aliyun_SMS_CODE_TPML','your aliyun default code template id')
+            'accessKeyId' => env('Aliyun_Pusher_AK_ID','your app access key id'),
+            'accessKeySecret' => env('Aliyun_Pusher_AK_SECRET','your app access key secret'),
+            'appKey' => env('Aliyun_Pusher_APPKEY','your app app key'),
         ],
     ],
 ];

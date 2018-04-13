@@ -22,6 +22,6 @@ class Push extends LaravelFacade
      */
     protected static function getFacadeAccessor()
     {
-        return 'Sms';
+        return 'Push';
     }
 }
